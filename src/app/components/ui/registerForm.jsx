@@ -16,19 +16,23 @@ const RegisterForm = () => {
         qualities: [],
         licence: false
     });
+
     const [qualities, setQualities] = useState({});
     const [professions, setProfession] = useState();
     const [errors, setErrors] = useState({});
+
     useEffect(() => {
         api.professions.fetchAll().then((data) => setProfession(data));
         api.qualities.fetchAll().then((data) => setQualities(data));
     }, []);
+
     const handleChange = (target) => {
         setData((prevState) => ({
             ...prevState,
             [target.name]: target.value
         }));
     };
+
     const validatorConfig = {
         email: {
             isRequired: {
@@ -65,14 +69,17 @@ const RegisterForm = () => {
             }
         }
     };
+
     useEffect(() => {
         validate();
     }, [data]);
+
     const validate = () => {
         const errors = validator(data, validatorConfig);
         setErrors(errors);
         return Object.keys(errors).length === 0;
     };
+
     const isValid = Object.keys(errors).length === 0;
 
     const handleSubmit = (e) => {
@@ -100,12 +107,13 @@ const RegisterForm = () => {
             />
             <SelectField
                 label="Выбери свою профессию"
-                defaultOption="Choose..."
+                defaultOption={"Choose..."}
                 options={professions}
                 name="profession"
                 onChange={handleChange}
                 value={data.profession}
                 error={errors.profession}
+                disabled={true}
             />
             <RadioField
                 options={[
@@ -121,7 +129,7 @@ const RegisterForm = () => {
             <MultiSelectField
                 options={qualities}
                 onChange={handleChange}
-                defaultValue={data.qualities}
+                defaultValue={qualities}
                 name="qualities"
                 label="Выберите ваши качества"
             />

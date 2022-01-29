@@ -193,7 +193,7 @@ const getById = (id) =>
                     (user) => user._id === id
                 )
             );
-        }, 1000);
+        }, 500);
     });
 export default {
     fetchAll,
