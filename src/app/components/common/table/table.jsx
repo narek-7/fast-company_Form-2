@@ -9,7 +9,7 @@ const Table = ({ onSort, selectedSort, columns, data, children }) => {
             {children || (
                 <>
                     <TableHeader {...{ onSort, selectedSort, columns }} />
-                    <TableBody {...{ columns, data }} />
+                    <TableBody data={data} columns={columns} />
                 </>
             )}
         </table>
@@ -22,5 +22,4 @@ Table.propTypes = {
     data: PropTypes.array,
     children: PropTypes.array
 };
-
 export default Table;

@@ -5,16 +5,23 @@ import PropTypes from "prop-types";
 import api from "../../../api";
 import EditForm from "../../ui/editForm";
 
-const UserPage = ({ userId }) => {
+const UserPage = ({ userId, handleUsersUpdate }) => {
     const { edit } = useParams();
     const [user, setUser] = useState();
+
     useEffect(() => {
         api.users.getById(userId).then((data) => setUser(data));
     }, []);
 
     if (user) {
         if (edit === "edit") {
-            return <EditForm user={user} />;
+            return (
+                <EditForm
+                    user={user}
+                    handleUsersUpdate={handleUsersUpdate}
+                    userId={userId}
+                />
+            );
         } else {
             return (
                 <div>
@@ -35,7 +42,8 @@ const UserPage = ({ userId }) => {
 };
 
 UserPage.propTypes = {
-    userId: PropTypes.string.isRequired
+    userId: PropTypes.string.isRequired,
+    handleUsersUpdate: PropTypes.func
 };
 
 export default UserPage;

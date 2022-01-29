@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import MultiSelectField from "../common/form/multiSelectField";
+import { useHistory } from "react-router-dom";
 import SelectField from "../common/form/selectField";
 import RadioField from "../common/form/radioField";
 import TextField from "../common/form/textField";
@@ -7,7 +8,7 @@ import { validator } from "../../utils/validator";
 import PropTypes from "prop-types";
 import api from "../../api";
 
-const EditForm = ({ user }) => {
+const EditForm = ({ user, handleUsersUpdate, userId }) => {
     const [data, setData] = useState({
         email: user.email,
         name: user.name,
@@ -16,11 +17,10 @@ const EditForm = ({ user }) => {
         qualities: []
     });
 
-    console.log("user", user);
-
     const [qualities, setQualities] = useState({});
     const [professions, setProfession] = useState();
     const [errors, setErrors] = useState({});
+    const history = useHistory();
 
     useEffect(() => {
         api.professions.fetchAll().then((data) => setProfession(data));
@@ -72,7 +72,11 @@ const EditForm = ({ user }) => {
     };
 
     const handleSubmit = (e) => {
-        console.log(e);
+        const isValid = validate();
+        if (!isValid) return;
+        handleUsersUpdate(userId, data);
+        history.push();
+        console.log("data", data);
     };
 
     if (qualities && professions) {
@@ -139,7 +143,9 @@ const EditForm = ({ user }) => {
 };
 
 EditForm.propTypes = {
-    user: PropTypes.object.isRequired
+    user: PropTypes.object.isRequired,
+    handleUsersUpdate: PropTypes.func,
+    userId: PropTypes.string.isRequired
 };
 
 export default EditForm;
@@ -155,3 +161,9 @@ export default EditForm;
 // rate: 2.5,
 // bookmark: false
 // }
+
+// email: user.email,
+// name: user.name,
+// profession: ".",
+// sex: "male",
+// qualities: []
