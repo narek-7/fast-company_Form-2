@@ -14,7 +14,7 @@ const UserPage = ({ userId }) => {
 
     if (user) {
         if (edit === "edit") {
-            return <EditForm user={user} />;
+            return <EditForm user={user} userId={userId} />;
         } else {
             return (
                 <div>

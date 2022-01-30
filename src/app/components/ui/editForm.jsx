@@ -3,11 +3,12 @@ import MultiSelectField from "../common/form/multiSelectField";
 import SelectField from "../common/form/selectField";
 import RadioField from "../common/form/radioField";
 import TextField from "../common/form/textField";
+import { useHistory } from "react-router-dom";
 import { validator } from "../../utils/validator";
 import PropTypes from "prop-types";
 import api from "../../api";
 
-const EditForm = ({ user }) => {
+const EditForm = ({ user, userId }) => {
     const [data, setData] = useState({
         email: user.email,
         name: user.name,
@@ -16,11 +17,10 @@ const EditForm = ({ user }) => {
         qualities: []
     });
 
-    console.log("user", user);
-
     const [qualities, setQualities] = useState({});
     const [professions, setProfession] = useState();
     const [errors, setErrors] = useState({});
+    const history = useHistory();
 
     useEffect(() => {
         api.professions.fetchAll().then((data) => setProfession(data));
@@ -72,7 +72,16 @@ const EditForm = ({ user }) => {
     };
 
     const handleSubmit = (e) => {
-        console.log(e);
+        e.preventDefault();
+        const isValid = validate();
+        if (!isValid) return;
+        api.users.update(userId, data).then(() =>
+            api.users.getById(userId).then((data) => {
+                setData((prevState) => (prevState = { data }));
+                console.log(data);
+                history.push(`/users/${userId}`);
+            })
+        );
     };
 
     if (qualities && professions) {
@@ -139,7 +148,8 @@ const EditForm = ({ user }) => {
 };
 
 EditForm.propTypes = {
-    user: PropTypes.object.isRequired
+    user: PropTypes.object.isRequired,
+    userId: PropTypes.string.isRequired
 };
 
 export default EditForm;
