@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import MultiSelectField from "../common/form/multiSelectField";
 import SelectField from "../common/form/selectField";
 import RadioField from "../common/form/radioField";
+import { validator } from "../../utils/validator";
 import TextField from "../common/form/textField";
 import { useHistory } from "react-router-dom";
-import { validator } from "../../utils/validator";
 import PropTypes from "prop-types";
 import api from "../../api";
 
@@ -26,10 +26,6 @@ const EditForm = ({ user, userId }) => {
         api.professions.fetchAll().then((data) => setProfession(data));
         api.qualities.fetchAll().then((data) => setQualities(data));
     }, []);
-
-    useEffect(() => {
-        setData(data);
-    }, [data]);
 
     useEffect(() => {
         setData(data);
