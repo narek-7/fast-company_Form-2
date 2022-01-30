@@ -8,9 +8,10 @@ import EditForm from "../../ui/editForm";
 const UserPage = ({ userId }) => {
     const { edit } = useParams();
     const [user, setUser] = useState();
+
     useEffect(() => {
         api.users.getById(userId).then((data) => setUser(data));
-    }, []);
+    }, [user]);
 
     if (user) {
         if (edit === "edit") {

@@ -31,6 +31,10 @@ const EditForm = ({ user, userId }) => {
         setData(data);
     }, [data]);
 
+    useEffect(() => {
+        setData(data);
+    }, [data]);
+
     const isValid = Object.keys(errors).length === 0;
 
     const handleChange = (target) => {
@@ -78,8 +82,7 @@ const EditForm = ({ user, userId }) => {
         api.users.update(userId, data).then(() =>
             api.users.getById(userId).then((data) => {
                 setData((prevState) => (prevState = { data }));
-                console.log(data);
-                history.push(`/users/${userId}`);
+                history.replace(`/users/${userId}`);
             })
         );
     };
