@@ -8,8 +8,7 @@ const SelectField = ({
     defaultOption,
     options,
     error,
-    name,
-    disabled
+    name
 }) => {
     const handleChange = ({ target }) => {
         onChange({ name: target.name, value: target.value });
@@ -18,13 +17,17 @@ const SelectField = ({
         return "form-select" + (error ? " is-invalid" : "");
     };
 
-    const optionsArray =
-        !Array.isArray(options) && typeof options === "object"
-            ? Object.keys(options).map((optionName) => ({
-                  name: options[optionName].name,
-                  value: options[optionName]._id
-              }))
-            : options;
+    const optionsArray = (options) => {
+        if (!Array.isArray(options) && typeof options === "object") {
+            return Object.keys(options).map((optionName) => ({
+                name: options[optionName].name,
+                value: options[optionName]._id
+            }));
+        } else {
+            console.log("kakash");
+            return options;
+        }
+    };
 
     return (
         <div className="mb-4">
@@ -38,11 +41,11 @@ const SelectField = ({
                 value={value}
                 onChange={handleChange}
             >
-                <option disabled={disabled} value="">
+                <option disabled value="">
                     {defaultOption}
                 </option>
-                {optionsArray &&
-                    optionsArray.map((option) => (
+                {optionsArray(options) &&
+                    optionsArray(options).map((option) => (
                         <option value={option.value} key={option.value}>
                             {option.name}
                         </option>

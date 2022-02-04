@@ -107,13 +107,14 @@ const RegisterForm = () => {
             />
             <SelectField
                 label="Выбери свою профессию"
-                defaultOption={"Choose..."}
+                defaultOption={[
+                    { name: data.profession.name, value: data.profession._id }
+                ]}
                 options={professions}
                 name="profession"
                 onChange={handleChange}
                 value={data.profession}
                 error={errors.profession}
-                disabled={true}
             />
             <RadioField
                 options={[

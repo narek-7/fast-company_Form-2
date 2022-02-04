@@ -8,55 +8,60 @@ import { useHistory } from "react-router-dom";
 import PropTypes from "prop-types";
 import api from "../../api";
 
-const EditForm = ({ user, userId }) => {
-    const [data, setData] = useState({
-        email: user.email,
-        name: user.name,
-        profession: ".",
-        sex: "male",
-        qualities: []
-    });
-
+const EditForm = ({ userId }) => {
+    const [data, setData] = useState({});
     const [qualities, setQualities] = useState({});
     const [professions, setProfession] = useState();
     const [errors, setErrors] = useState({});
     const history = useHistory();
 
     useEffect(() => {
+        api.users.getById(userId).then((data) => setData(data));
         api.professions.fetchAll().then((data) => setProfession(data));
         api.qualities.fetchAll().then((data) => setQualities(data));
     }, []);
 
-    useEffect(() => {
-        setData(data);
-    }, [data]);
-
     const isValid = Object.keys(errors).length === 0;
 
     const handleChange = (target) => {
-        setData((prevState) => ({
-            ...prevState,
-            [target.name]: target.value
-        }));
+        console.log("target", target);
+        if (target.name === "profession") {
+            const prof = Object.keys(professions).find(
+                (profession) => professions[profession]._id === target.value
+            );
+            setData((prevState) => ({
+                ...prevState,
+                [target.name]: professions[prof]
+            }));
+        } else if (target.name === "qualities") {
+            const activeUserQualArray = [];
+            target.value.forEach((qualId) =>
+                activeUserQualArray.push(qualId.value)
+            );
+            const qualitiesArray = Object.values(qualities).filter((qual) =>
+                activeUserQualArray.includes(qual._id)
+            );
+            setData((prevState) => ({
+                ...prevState,
+                [target.name]: qualitiesArray
+            }));
+        } else {
+            setData((prevState) => ({
+                ...prevState,
+                [target.name]: target.value
+            }));
+        }
     };
 
     const validatorConfig = {
         email: {
             isRequired: {
                 message: "Электронная почта обязательна для заполнения"
-            },
-            isEmail: {
-                message: "Email введен некорректно"
             }
         },
         name: {
             isRequired: {
                 message: "Имя обязателен для заполнения"
-            }
-        },
-        profession: {
-            isRequired: {
-                message: "Обязательно выберите вашу профессию"
             }
         }
     };
@@ -74,13 +79,13 @@ const EditForm = ({ user, userId }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         const isValid = validate();
-        if (!isValid) return;
-        api.users.update(userId, data).then(() =>
-            api.users.getById(userId).then((data) => {
-                setData((prevState) => (prevState = { data }));
-                history.replace(`/users/${userId}`);
-            })
-        );
+        if (isValid) {
+            api.users.update(userId, data).then((data) => {
+                if (data) {
+                    history.replace(`/users/${data._id}`);
+                }
+            });
+        }
     };
 
     if (qualities && professions) {
@@ -105,12 +110,11 @@ const EditForm = ({ user, userId }) => {
                             />
                             <SelectField
                                 label="Изменить профессию"
-                                defaultOption={user.profession.name}
+                                defaultOption={data.profession.name}
                                 options={professions}
                                 name="profession"
                                 onChange={handleChange}
                                 value={data.profession}
-                                disabled={false}
                                 error={errors.profession}
                             />
                             <RadioField
@@ -126,7 +130,7 @@ const EditForm = ({ user, userId }) => {
                             <MultiSelectField
                                 options={qualities}
                                 onChange={handleChange}
-                                defaultValue={qualities}
+                                defaultValue={data.qualities}
                                 name="qualities"
                                 label="Изменить качества"
                             />
@@ -147,7 +151,6 @@ const EditForm = ({ user, userId }) => {
 };
 
 EditForm.propTypes = {
-    user: PropTypes.object.isRequired,
     userId: PropTypes.string.isRequired
 };
 
