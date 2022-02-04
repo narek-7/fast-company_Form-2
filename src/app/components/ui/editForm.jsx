@@ -114,7 +114,7 @@ const EditForm = ({ userId }) => {
                                 options={professions}
                                 name="profession"
                                 onChange={handleChange}
-                                value={data.profession}
+                                value={data.profession._id}
                                 error={errors.profession}
                             />
                             <RadioField
