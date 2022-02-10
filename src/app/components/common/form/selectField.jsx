@@ -24,7 +24,6 @@ const SelectField = ({
                 value: options[optionName]._id
             }));
         } else {
-            console.log("kakash");
             return options;
         }
     };
